@@ -1,48 +1,40 @@
 <html>
 <body>
   <h1>AI product creator</h1>
-  <input type="text" id="description" placeholder="Décrivez le produit..." />
-  <button onclick="callMakeAPI()">Envoyer</button>
+  <div><textarea id="description" placeholder="Décrivez le produit..." rows="4" cols="100"></textarea></div>
+  <div><button onclick="callMakeAPI()">Envoyer</button></div>
   <div id="loading" style="display:none;">Chargement...</div>
   <div id="results"></div>
-  <script>
-    function callMakeAPI() {
+<script>
+    async function callMakeAPI() {
       const description = document.getElementById("description").value;
       const loadingDiv = document.getElementById("loading");
       const resultsDiv = document.getElementById("results");
-  
+
       // Show loading message
       loadingDiv.style.display = "block";
       resultsDiv.innerHTML = "";
-  
-      fetch("https://hook.eu2.make.com/d65rz0uhbkv8ukg7j3m0t0af6rhdf40c", {
+
+      const response = await fetch("https://hook.eu2.make.com/d65rz0uhbkv8ukg7j3m0t0af6rhdf40c", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ description }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Hide loading message
-        loadingDiv.style.display = "none";
-  
-        // Process each set of results
-        resultsDiv.innerHTML = data.map(set => set.map(item => `
-          <div>
+      });
+      const data = await response.json();
+
+      resultsDiv.innerHTML = data.map(item => `
+        <div>
             <h2>${item.product_name}</h2>
             <img src="${item.data[0].url}" alt="${item.product_name}" style="width:200px;"/>
             <p>Procédé: ${item.manufacturing_process}</p>
             <p>Matériau: ${item.main_material}</p>
             <p>Coût: ${item.estimated_cost}€</p>
-          </div>
-        `).join('')).join('');
-      })
-      .catch(error => {
-        // Hide loading message
-        loadingDiv.style.display = "none";
-        resultsDiv.innerHTML = "Une erreur s'est produite. Veuillez réessayer.";
-        console.error('Error:', error);
-      });
+        </div>
+      `).join('');
+
+      // Hide loading message
+      loadingDiv.style.display = "none";
     }
-  </script>
+</script>
 </body>
 </html>
