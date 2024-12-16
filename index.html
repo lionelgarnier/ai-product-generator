@@ -25,7 +25,8 @@
         // Hide loading message
         loadingDiv.style.display = "none";
   
-        resultsDiv.innerHTML = data.map(item => `
+        // Process each set of results
+        resultsDiv.innerHTML = data.map(set => set.map(item => `
           <div>
             <h2>${item.product_name}</h2>
             <img src="${item.data[0].url}" alt="${item.product_name}" style="width:200px;"/>
@@ -33,7 +34,7 @@
             <p>Matériau: ${item.main_material}</p>
             <p>Coût: ${item.estimated_cost}€</p>
           </div>
-        `).join('');
+        `).join('')).join('');
       })
       .catch(error => {
         // Hide loading message
