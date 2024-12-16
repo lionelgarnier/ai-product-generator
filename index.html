@@ -1,0 +1,29 @@
+<html>
+<body>
+  <h1>Créateur de Produit</h1>
+  <input type="text" id="description" placeholder="Décrivez le produit..." />
+  <button onclick="callMakeAPI()">Envoyer</button>
+  <div id="results"></div>
+  <script>
+    async function callMakeAPI() {
+      const description = document.getElementById("description").value;
+      const response = await fetch("https://hook.eu2.make.com/d65rz0uhbkv8ukg7j3m0t0af6rhdf40c", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description }),
+      });
+      const data = await response.json();
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = data.map(item => `
+        <div>
+          <h2>${item.product_name}</h2>
+          <img src="${item.data[0].url}" alt="${item.product_name}" style="width:200px;"/>
+          <p>Procédé: ${item.manufacturing_process}</p>
+          <p>Matériau: ${item.main_material}</p>
+          <p>Coût: ${item.estimated_cost}€</p>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
